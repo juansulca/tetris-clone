@@ -40,7 +40,7 @@ class Tetromino:
     self.is_current = current
     self.is_on_hold = hold
     self.last_movement = time.time()
-    self.update_interval = 0.2
+    self.update_interval = 0.8
     self.shape = random.choice(list(TETROMINOES.keys()))
     self.color = T_COLORS[self.shape]
     self.blocks = [Block(self, pos, self.color) for pos in TETROMINOES[self.shape]]

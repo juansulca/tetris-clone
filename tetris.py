@@ -98,12 +98,13 @@ class Tetris:
     self.check_full_lines()
 
   def control(self):
-    if pyxel.btnp(pyxel.KEY_LEFT):
-      self.tetromino.move('left')
-    if pyxel.btnp(pyxel.KEY_RIGHT):
-      self.tetromino.move('right')
-    if pyxel.btnp(pyxel.KEY_DOWN):
-      self.tetromino.move('down')
+    if pyxel.frame_count % 4 == 0:
+      if pyxel.btn(pyxel.KEY_LEFT):
+        self.tetromino.move('left')
+      if pyxel.btn(pyxel.KEY_RIGHT):
+        self.tetromino.move('right')
+      if pyxel.btn(pyxel.KEY_DOWN):
+        self.tetromino.move('down')
     if pyxel.btnp(pyxel.KEY_SPACE):
       self.tetromino.rotate()
     if pyxel.btnp(pyxel.KEY_B):
