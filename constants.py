@@ -26,3 +26,5 @@ STARTING_POSITIONS = (WIDTH // 2 - 1 , 0)
 NEXT_POSITIONS = (int(WIDTH * 1.3) , int(HEIGHT * 0.45))
 
 MOVE_DIRECTIONS = { 'left': (-1, 0), 'right': (1, 0), 'down': (0, 1) }
+
+ALPHABET = 'c a t'. split()#'a e o c t u'. split()

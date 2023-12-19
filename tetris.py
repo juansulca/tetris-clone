@@ -1,6 +1,10 @@
 import pyxel
 from constants import WIDTH, HEIGHT, TILE_SIZE, STARTING_POSITIONS, NEXT_POSITIONS
 from tetromino import Tetromino
+from nltk.corpus import words
+
+def is_english_word(word):
+    return word.lower() in words.words()
 
 class Tetris:
   def __init__(self, app) -> None:
@@ -24,8 +28,9 @@ class Tetris:
     for x in range(WIDTH):
       for y in range(HEIGHT):
         if self.grid[y][x]:
-          color = self.grid[y][x].color
-          pyxel.rect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE, color)
+          block = self.grid[y][x]
+          pyxel.rect(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE, block.color)
+          pyxel.text(x*TILE_SIZE + 2, y*TILE_SIZE + 2, block.letter, 7)
         else:
           pyxel.rectb(x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE, 13)
 
@@ -48,9 +53,31 @@ class Tetris:
     for block in self.tetromino.blocks:
       x, y = block.x, block.y
       self.grid[y][x] = block
+  
+  def check_word(self, row):
+    bonus = 0
+    current = row[0].letter
+    word = current
+    for i in range(1, len(row)):
+      if row[i] and current == row[i].letter:
+        continue
+      word += row[i].letter
+      current = row[i].letter
+    
+    found = False
+    for i in range(len(word)):
+      for j in range(i + 2, len(word)):
+        word_to_test = word[i:j]
+        if is_english_word(word_to_test):
+          found = True
+      if found:
+        bonus += 300
+        break
+    return bonus
 
   def check_full_lines(self):
     full_lines = 0
+    bonus = 0
     row = HEIGHT - 1
     for y in range(HEIGHT - 1, -1, -1):
       for x in range(WIDTH):
@@ -63,11 +90,13 @@ class Tetris:
       if sum(map(bool, self.grid[row])) < WIDTH:
         row -= 1
       else:
+        # check word in row
+        bonus += self.check_word(self.grid[row])
         for x in range(WIDTH):
           self.grid[row][x] = 0
         full_lines += 1
       
-    self.score += self.points_per_lines[full_lines]
+    self.score += self.points_per_lines[full_lines] + bonus
         
   def hold_tetromino(self):
     if self.hold_pressed:
@@ -90,7 +119,6 @@ class Tetris:
       self.hold = temp
       self.hold.is_current = False
       self.hold.is_on_hold = True
-      # self.next_tetromino = Tetromino(self, False)
 
   def update(self):
     self.tetromino.update()

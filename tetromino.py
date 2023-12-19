@@ -1,16 +1,17 @@
 import time
 import pyxel
 import random
-from constants import TILE_SIZE, WIDTH, HEIGHT, TETROMINOES, MOVE_DIRECTIONS, STARTING_POSITIONS, T_COLORS, NEXT_POSITIONS
+from constants import TILE_SIZE, WIDTH, HEIGHT, TETROMINOES, MOVE_DIRECTIONS, STARTING_POSITIONS, T_COLORS, NEXT_POSITIONS, ALPHABET
 
 class Block:
-  def __init__(self, tetromino, pos, color):
+  def __init__(self, tetromino, pos, color, letter):
     self.tetromino = tetromino
     self.x = pos[0] + STARTING_POSITIONS[0]
     self.y = pos[1] + STARTING_POSITIONS[1]
     self.next_x = pos[0] + NEXT_POSITIONS[0]
     self.next_y = pos[1] + NEXT_POSITIONS[1]
     self.color = color
+    self.letter = letter
 
   def reset_position(self, pos):
     self.x = pos[0] + STARTING_POSITIONS[0]
@@ -25,9 +26,11 @@ class Block:
   def draw(self):
     if self.tetromino.is_current:
       pyxel.rect(self.x * TILE_SIZE, self.y * TILE_SIZE, TILE_SIZE, TILE_SIZE, self.color)
+      pyxel.text(self.x * TILE_SIZE + 2, self.y * TILE_SIZE + 2, self.letter, 7)
     else:
       extra_offset = 5 if self.tetromino.is_on_hold else 0
       pyxel.rect(self.next_x * TILE_SIZE, (self.next_y + extra_offset) * TILE_SIZE, TILE_SIZE, TILE_SIZE, self.color)
+      pyxel.text(self.next_x * TILE_SIZE + 2, (self.next_y + extra_offset) * TILE_SIZE + 2, self.letter, 7)
 
   def is_colliding(self):
     if 0 <= self.x < WIDTH and self.y < HEIGHT:
@@ -43,7 +46,8 @@ class Tetromino:
     self.update_interval = 0.8
     self.shape = random.choice(list(TETROMINOES.keys()))
     self.color = T_COLORS[self.shape]
-    self.blocks = [Block(self, pos, self.color) for pos in TETROMINOES[self.shape]]
+    self.letter = random.choice(ALPHABET)
+    self.blocks = [Block(self, pos, self.color, self.letter) for pos in TETROMINOES[self.shape]]
     self.landed = False
 
   def move(self, direction):
@@ -83,4 +87,4 @@ class Tetromino:
       b.draw()
   
   def reset_position(self):
-    self.blocks = [Block(self, pos, self.color) for pos in TETROMINOES[self.shape]]
+    self.blocks = [Block(self, pos, self.color, self.letter) for pos in TETROMINOES[self.shape]]

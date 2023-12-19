@@ -1,6 +1,9 @@
 import pyxel
 from constants import TILE_SIZE, WIDTH, HEIGHT
 from tetris import Tetris
+import nltk
+
+nltk.download('words')
 
 class App:
   def __init__(self):
