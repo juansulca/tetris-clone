@@ -41,7 +41,8 @@ class Tetris:
   def check_tetromino_landed(self):
     if self.tetromino.landed:
       if self.is_game_over():
-        print('Game Over')
+        self.app.screen = 'game_over'
+        self.__init__(self.app)
       else:
         self.put_blocks_in_grid()
         self.tetromino = self.next_tetromino
